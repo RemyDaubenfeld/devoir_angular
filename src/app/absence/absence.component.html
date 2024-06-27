@@ -1,0 +1,25 @@
+<h1 class="text-center m-5">Déclarer une absence</h1>
+
+<div class="m-5">
+    <form class="formulaire" (ngSubmit)="onAddAbsence()" [formGroup]="formulaire" enctype="multipart/form-data">
+        <mat-form-field>
+            <mat-label>Date de l'absence</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="absence_date">
+            <mat-hint> MM/DD/AAAA </mat-hint> 
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Durée et raison</mat-label>
+            <input matInput type="text" formControlName="absence_reason">
+        </mat-form-field>
+        <div class="d-flex flex-column  p-3 mb-3 bg-dark">
+            <label for="absence_proof" class="form-label">Justificatif</label>
+            <input id="absence_proof" type="file" class="form-control" accept=".pdf, .png, .jpg, .jpeg" (change)="onFileSelected($event)">
+            <mat-hint> Format autorisé: PDF / PNG / JPG / JPEG</mat-hint> 
+            <mat-hint> Taille max autorisée: 2Mo</mat-hint> 
+        </div>
+
+        <button mat-raised-button color="primary">Déclarer l'absence</button>
+    </form>
+</div>

@@ -1,0 +1,13 @@
+<form class="formulaire" (ngSubmit)="onLogin()" [formGroup]="formulaire">
+  <mat-form-field>
+    <mat-label>Email</mat-label>
+    <input matInput formControlName="user_mail" type="user_mail" placeholder="Ex. john.doe@domain.com"/>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Mot de passe</mat-label>
+    <input matInput formControlName="user_password" type="user_password"/>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary">Se connecter</button>
+</form>

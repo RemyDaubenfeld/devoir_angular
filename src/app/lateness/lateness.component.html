@@ -1,0 +1,19 @@
+<h1 class="text-center m-5">Déclarer un retard</h1>
+
+<div class="m-5">
+    <form class="formulaire" (ngSubmit)="onAddLateness()" [formGroup]="formulaire">
+        <mat-form-field>
+            <mat-label>Date de retard</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="lateness_date">
+            <mat-hint> MM/DD/AAAA </mat-hint> 
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Raison</mat-label>
+            <input matInput type="text" formControlName="lateness_reason">
+          </mat-form-field>
+
+        <button mat-raised-button color="primary">Déclarer le retard</button>
+    </form>
+</div>

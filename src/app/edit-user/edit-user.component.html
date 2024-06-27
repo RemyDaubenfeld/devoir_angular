@@ -1,0 +1,42 @@
+<form [formGroup]="formulaire" class="formulaire" (ngSubmit)="onAddUser()">
+
+    <mat-form-field>
+      <mat-label>Prénom</mat-label>
+      <input matInput placeholder="ex: John" type="text" formControlName="user_firstname">
+      <mat-error>Ce champs est obligatoire</mat-error>
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-label>Nom</mat-label>
+      <input matInput placeholder="ex: DOE" type="text" formControlName="user_lastname">
+      <mat-error>Ce champs est obligatoire</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput placeholder="ex: john.doe@gmail.com" type="email" formControlName="user_mail">
+
+      @if(formulaire.get("email")?.hasError('required')){
+        <mat-error>Ce champs est obligatoire</mat-error>
+      } @else if (formulaire.get("email")?.hasError('email')) {
+        <mat-error>Le format de l'email est incorrect</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Mot de passe</mat-label>
+      <input matInput type="password" formControlName="user_password">
+      <mat-error>Ce champs est obligatoire</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Role</mat-label>
+        <mat-select formControlName="role_name">
+            @for (role of roleList; track role) {
+              <mat-option [value]="role">{{ role }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary">{{userId ? "Modifier l'utilisateur" : "Ajouter l'utilisateur"}}</button>
+</form>

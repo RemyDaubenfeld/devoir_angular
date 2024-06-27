@@ -1,0 +1,143 @@
+<div class="m-5">
+    @if (authentification.role_name == "Etudiant") {
+        <h1 class="text-center">Bonjour {{ user_firstname }} {{ user_lastname }}</h1>
+        <p class="text-center">Vous avez un compte {{authentification.role_name}}</p>
+        <div class="row">
+        <div class="col-md-6">
+            <div class="d-flex justify-content-center m-5">
+                <button mat-raised-button color="primary" routerLink="/retard">Déclarer un retard</button>
+            </div>
+    
+            <div class="mat-elevation-z8 m-5">
+                <h3>Liste des retards</h3>
+                <table mat-table [dataSource]="latenessUser">
+                    <ng-container matColumnDef="date">
+                      <th mat-header-cell *matHeaderCellDef> Date </th>
+                      <td mat-cell *matCellDef="let lateness"> {{lateness.lateness_date}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="reason">
+                      <th mat-header-cell *matHeaderCellDef> Raison </th>
+                      <td mat-cell *matCellDef="let lateness"> {{lateness.lateness_reason}} </td>
+                    </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="['date', 'reason']"></tr>
+                      <tr mat-row *matRowDef="let row; columns: ['date', 'reason'];"></tr>
+                    </table>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="d-flex justify-content-center m-5">
+                <button mat-raised-button color="primary" routerLink="/absence">Déclarer une absence</button>
+            </div>
+            <div class="mat-elevation-z8 m-5">
+                <h3>Liste des absences</h3>
+                <table mat-table [dataSource]="absenceUser">
+                    <ng-container matColumnDef="date">
+                      <th mat-header-cell *matHeaderCellDef> Date </th>
+                      <td mat-cell *matCellDef="let absence"> {{absence.absence_date}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="reason">
+                      <th mat-header-cell *matHeaderCellDef> Durée et raison </th>
+                      <td mat-cell *matCellDef="let absence"> {{absence.absence_reason}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="proof">
+                      <th mat-header-cell *matHeaderCellDef> Justificatif </th>
+                      <td mat-cell *matCellDef="let absence"> {{ absence.absence_proof ? 'Oui' : 'Non' }} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                      <th mat-header-cell *matHeaderCellDef> Statut </th>
+                      <td mat-cell *matCellDef="let absence"> {{absence.status_name}} </td>
+                    </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="['date', 'reason', 'proof', 'status']"></tr>
+                      <tr mat-row *matRowDef="let row; columns: ['date', 'reason', 'proof', 'status'];"></tr>
+                    </table>
+            </div>
+        </div>
+        </div>
+        
+        
+    } @else if (authentification.role_name == "Gestionnaire" || authentification.role_name == "Administrateur") {
+        <h1 class="text-center">Bonjour {{ user_firstname }} {{ user_lastname }}</h1>
+
+        <div class="mat-elevation-z8 m-5">
+          <button mat-button (click)="toggleList('lateness')" [ngClass]="{'mat-primary': activeButton === 'lateness', 'mat-button': activeButton !== 'lateness'}">Voir les retards</button>
+          <button mat-button (click)="toggleList('absence')" [ngClass]="{'mat-primary': activeButton === 'absence', 'mat-button': activeButton !== 'absence'}" class="ml-4">Voir les absences</button>
+        </div>
+
+        <div class="mat-elevation-z8 m-5" *ngIf="showList">
+            <h3>Liste des retards</h3>
+            <table mat-table [dataSource]="latenessList">
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell *matHeaderCellDef> Date </th>
+                  <td mat-cell *matCellDef="let lateness"> {{lateness.lateness_date}} </td>
+                </ng-container>
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef> Nom </th>
+                    <td mat-cell *matCellDef="let lateness"> {{lateness.user_lastname}} {{lateness.user_firstname}} </td>
+                </ng-container>
+                <ng-container matColumnDef="reason">
+                  <th mat-header-cell *matHeaderCellDef> Raison </th>
+                  <td mat-cell *matCellDef="let lateness"> {{lateness.lateness_reason}} </td>
+                </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="['date', 'name', 'reason']"></tr>
+                  <tr mat-row *matRowDef="let row; columns: ['date', 'name', 'reason'];"></tr>
+                </table>
+        </div>
+
+        <div class="mat-elevation-z8 m-5" *ngIf="!showList">
+          <h3>Liste des absences</h3>
+          <table mat-table [dataSource]="absenceList">
+              <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef> Date </th>
+                <td mat-cell *matCellDef="let absence"> {{absence.absence_date}} </td>
+              </ng-container>
+              <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef> Nom - Prénom</th>
+                  <td mat-cell *matCellDef="let absence"> {{absence.user_lastname}} {{absence.user_firstname}} </td>
+              </ng-container>
+              <ng-container matColumnDef="reason">
+                <th mat-header-cell *matHeaderCellDef> Durée et raison </th>
+                <td mat-cell *matCellDef="let absence"> {{absence.absence_reason}} </td>
+              </ng-container>
+              <ng-container matColumnDef="proof">
+                <th mat-header-cell *matHeaderCellDef> Justificatif </th>
+                <td mat-cell *matCellDef="let absence"> 
+                  <ng-container *ngIf="absence.absence_proof; else noProof">
+                    <a [href]="getProofUrl(absence.absence_proof)" target="_blank" download><mat-icon color="secondary">visibility</mat-icon></a>
+                  </ng-container>
+                <ng-template #noProof>Non</ng-template> </td>
+              </ng-container>
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef> Statut </th>
+                <td mat-cell *matCellDef="let absence"> {{absence.status_name}} </td>
+              </ng-container>
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>  </th>
+                <td mat-cell *matCellDef="let absence">
+                  <div class="d-flex align-items-center">
+                    <div class="d-flex justify-content-center w-25">
+                      <button *ngIf="absence.status_id === 3 || absence.status_id === 1" mat-mini-fab class="mr-2 bg-success text-white" (click)="onJustifiedAbsence(absence.absence_id)">
+                        <mat-icon>check</mat-icon>
+                      </button>
+                    </div>
+                    <div class="d-flex justify-content-center w-25">
+                      <button *ngIf="absence.status_id === 2 || absence.status_id === 1" mat-mini-fab class="ml-2 bg-danger text-white" (click)="onUnjustifiedAbsence(absence.absence_id)">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                </td>
+              </ng-container>
+                <tr mat-header-row *matHeaderRowDef="['date', 'name', 'reason', 'proof', 'status', 'action']"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['date', 'name', 'reason', 'proof', 'status', 'action'];"></tr>
+              </table>
+      </div>
+    } @else {
+        <div class="justify-content-center text-center">
+            <h1>Bienvenue sur le site Admin MNS</h1>
+            <div class="m-5">
+                <h4>Vous n'êtes pas connecté</h4>
+                <button mat-raised-button color="primary" routerLink="/connexion">Se connecter</button>
+            </div>
+        </div>
+    }
+</div>
